@@ -190,7 +190,7 @@ int main(void)
     funcRunDelayed (NT_LED_ALARM, 200);               // обновление состояния светодиода аварии
     funcRunDelayed (NT_LED_STAT, 500);                // обновление светодиода состояния
     funcRunDelayed (NT_RUN_1S, 1000);                 // функция для запуска 1 раз в секунду
-    funcRunDelayed (NT_UPDATE_COMPRESS_STATE, 70);    // обновление состояния компрессора
+    funcRunDelayed (NT_UPDATE_COMPRESS_STATE, 80);    // обновление состояния компрессора
     if(W_SPEED != modBusExt.speed || modBusExt.adress != W_ADDRESS) {
       funcRunDelayed (NT_CHANGE_MODB, 1000);          // обновление параметров modbus
     }

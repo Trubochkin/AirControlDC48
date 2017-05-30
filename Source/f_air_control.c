@@ -104,7 +104,18 @@ void runOnce1s (void)
       }
     }
     
-// **************** операции для компрессора *************        
+// **************** операции для компрессора *************
+    //если компрессор не "упавший"
+    //и есть команда на запуск
+    //и текущие обороты компрессора больше чем задан. +100
+    if(!CompresStr.flagFault
+    && CompresStr.commandStartStop == C_START
+    && (R_RPM_COMPRES > (W_MAX_RPM_COMPRESS + 100))) {
+      if(DUTY_SPEED_COMPRES < MAX_DUTY_COMPRES) {
+          DUTY_SPEED_COMPRES = DUTY_SPEED_COMPRES + 1;    // уменьшаем обороты (инверсное задание)
+      }
+    }
+
     if(CompresStr.commandStartStop == C_START 
     && !CompresStr.flagSetStart
     && CompresStr.flagFault == 0) {
@@ -210,8 +221,8 @@ void updateCompressorState (void)
             CompresStr.flagSetStart = 0;
         }
         
-        // если заданная мощность > 40% и обороты < 100RPM
-        if(R_COMPRESS > 40 && R_RPM_COMPRES <= 100) {
+        // если заданная мощность > 40% и обороты < 100RPM и ток = 0
+        if(R_COMPRESS > 40 && R_RPM_COMPRES <= 100 && R_CURRENT_AMP == 0) {
             DUTY_SPEED_COMPRES = MAX_DUTY_COMPRES;  // выключаем компрессор
             CompresStr.flagFault = 1;               // выставляем флаг "компрессор упал"
         }
