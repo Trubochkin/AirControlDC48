@@ -1,0 +1,10 @@
+StdLib
+*.zip
+*.xlsx
+
+/Project
+!/Project/*.uvproj
+!/Project/*.uvprojx
+!/Project/*.uvoptx
+!/Project/*.uvguix.usera
+!/Project/*.hex
