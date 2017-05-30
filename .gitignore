@@ -1,6 +1,6 @@
-StdLib
-*.zip
-*.xlsx
+/StdLib
+/*.zip
+/*.xlsx
 
 /Project
 !/Project/*.uvproj
