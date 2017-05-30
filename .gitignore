@@ -2,7 +2,8 @@
 /*.zip
 /*.xlsx
 
-/Project
+/Project/Objects/
+/Project/Listings/
 !/Project/*.uvproj
 !/Project/*.uvprojx
 !/Project/*.uvoptx
