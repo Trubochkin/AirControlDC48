@@ -100,15 +100,18 @@ void SysTick_Handler(void)
 void EXTI4_15_IRQHandler(void)
 {
 	if(EXTI_GetITStatus(EXTI_Line12) != RESET) {
-    TIM15->CR1 = TIM_CR1_CEN;      //запустить таймер
-    CompresStr.countTacho++;
-    if((CompresStr.countTacho > 6) && (TIM15->CR1 & TIM_CR1_CEN)) {
-        CompresStr.timePeriodTurn = TIM15->CNT; // запоминаем время
-        TIM15->CR1 &= ~TIM_CR1_CEN;             // останавливаем таймер
-        TIM15->CNT = 0;                         // сбрасываем время таймера
-        CompresStr.flagCountTimDone = 1;
-        CompresStr.countTacho = 0;
-//        NVIC_DisableIRQ(EXTI4_15_IRQn);         // запрещаем прерывания
+    if((CompresStr.countTacho > 6) && !CompresStr.flagCountTimDone) {
+      CompresStr.timePeriodTurn = TIM15->CNT; // запоминаем время
+      TIM15->CR1 &= ~TIM_CR1_CEN;             // останавливаем таймер
+      TIM15->CNT = 0;                         // сбрасываем время таймера
+      CompresStr.flagCountTimDone = 1;
+      CompresStr.countTacho = 0;
+//      NVIC_DisableIRQ(EXTI4_15_IRQn);         // запрещаем прерывания
+    } else {
+      if(!(TIM15->CR1 & TIM_CR1_CEN)) {
+        TIM15->CR1 |= TIM_CR1_CEN;              //запустить таймер
+      }
+      CompresStr.countTacho++;
     }
 		EXTI_ClearITPendingBit(EXTI_Line12);
 	}

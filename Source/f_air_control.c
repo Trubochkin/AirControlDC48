@@ -178,7 +178,7 @@ void updateCompressorState (void)
         // если не установлено стартовое значение и компрессор не "падал"
         if(!CompresStr.flagSetStart && !CompresStr.flagFault) {
             DUTY_SPEED_COMPRES = 750;               // установка начального значения задания оборотов
-            if(CompresStr.countTimeStart < 4) {     // если не прошло 4с
+            if(CompresStr.countTimeStart > 3) {     // если не прошло 3с
                 CompresStr.flagSetStart = 1;
             }
         } else {
@@ -387,14 +387,17 @@ void computeRpmCompress (void)
         if(CompresStr.flagCountTimDone) {
             CompresStr.speedRPM = ((1000000 / CompresStr.timePeriodTurn) * 6);
 #endif
-            if (CompresStr.speedRPM > 0x8000) {
-                R_RPM_COMPRES = -1;
+            if (CompresStr.speedRPM > 6000) {
+                R_RPM_COMPRES = R_RPM_COMPRES;
             } else if (CompresStr.speedRPM < 100) {
                 R_RPM_COMPRES = 0;
             } else {
                 R_RPM_COMPRES = CompresStr.speedRPM;
             }
+            TIM15->CR1 &= ~TIM_CR1_CEN;             // останавливаем таймер
+            TIM15->CNT = 0;                         // сбрасываем время таймера
             CompresStr.flagCountTimDone = 0;
+            CompresStr.countTacho = 0;
 //            NVIC_EnableIRQ(EXTI4_15_IRQn);  //возобновляем прерывания
         }
         CompresStr.buffCheckStop = CompresStr.countTacho;

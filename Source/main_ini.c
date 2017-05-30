@@ -57,9 +57,10 @@ void initializeCompress(void)
   GPIO_InitTypeDef GPIO_InitStruct;
   TIM_TimeBaseInitTypeDef timerInitStructure;
   TIM_OCInitTypeDef PWMChannelInit;
+  EXTI_InitTypeDef EXTI_InitStruct;
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2ENR_TIM1EN, ENABLE);
-  EXTI_InitTypeDef EXTI_InitStruct;
+  RCC_APB2PeriphClockCmd(RCC_APB2ENR_SYSCFGEN, ENABLE);
 
   // Инициализация пина для RPM компрессора
   GPIO_InitStruct.GPIO_Pin = GPIO_Pin_12;	
@@ -68,9 +69,8 @@ void initializeCompress(void)
   GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_DOWN;
   GPIO_Init(GPIOA, &GPIO_InitStruct);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_2);
+//  GPIO_PinAFConfig(GPIOA, GPIO_PinSource12, GPIO_AF_2);
 
-  RCC_APB2PeriphClockCmd(RCC_APB2ENR_SYSCFGEN, ENABLE);
   SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource12);
   EXTI_InitStruct.EXTI_Line = EXTI_Line12;
   EXTI_InitStruct.EXTI_Mode = EXTI_Mode_Interrupt;

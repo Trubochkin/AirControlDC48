@@ -276,7 +276,7 @@ extern ADCparametersTypeDef ADCStr;	//параметры ADC
 //структура параметров для компрессора
 typedef struct {
     uint16_t powerPercent;          //заданная мощность	(%)
-    uint16_t speedRPM;              //скорость вращения об/мин
+    uint32_t speedRPM;              //скорость вращения об/мин
     uint16_t timePeriodTurn;        //время одного оборота (в десятках мкс.)
     uint8_t flagCountTimDone;       //флаг завершения счёта таймера для одного оборота
     uint16_t timerMain;             //таймер компрессора (сек.)
