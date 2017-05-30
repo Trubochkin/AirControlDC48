@@ -64,7 +64,7 @@ void write_value_default(uint8_t i)
   W_FAN_CONDENSER = 0;
   W_FAN_EVAP = 0;
   W_COMPRES = 0;
-  W_MAX_RPM_COMPRESS = 2500;
+  W_MIN_RPM_COMPRESS = 2500;
   W_TON_HEAT = 10;
     
 	FLASH_Unlock();

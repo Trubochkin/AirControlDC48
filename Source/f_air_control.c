@@ -107,10 +107,10 @@ void runOnce1s (void)
 // **************** операции для компрессора *************
     //если компрессор не "упавший"
     //и есть команда на запуск
-    //и текущие обороты компрессора больше чем задан. +100
+    //и текущие обороты компрессора больше чем задан.+100
     if(!CompresStr.flagFault
     && CompresStr.commandStartStop == C_START
-    && (R_RPM_COMPRES > (W_MAX_RPM_COMPRESS + 100))) {
+    && (R_RPM_COMPRES > (W_MIN_RPM_COMPRESS + 100))) {
       if(DUTY_SPEED_COMPRES < MAX_DUTY_COMPRES) {
           DUTY_SPEED_COMPRES = DUTY_SPEED_COMPRES + 1;    // уменьшаем обороты (инверсное задание)
       }
@@ -178,19 +178,19 @@ void updateCompressorState (void)
         // если не установлено стартовое значение и компрессор не "падал"
         if(!CompresStr.flagSetStart && !CompresStr.flagFault) {
             DUTY_SPEED_COMPRES = 750;               // установка начального значения задания оборотов
-            if(CompresStr.countTimeStart < 3) {     // если не прошло 3с
+            if(CompresStr.countTimeStart < 4) {     // если не прошло 4с
                 CompresStr.flagSetStart = 1;
             }
         } else {
             if(!CompresStr.flagFault) {                           // если компрессор не "падал"
                 if(CompresStr.countTimeWork < 40) {		            // если не прошло 40с
-                    if(R_RPM_COMPRES < W_MAX_RPM_COMPRESS) {	    // если обороты не достигли заданного значения 
+                    if(R_RPM_COMPRES < W_MIN_RPM_COMPRESS) {	    // если обороты не достигли заданного значения 
                         // увеличиваем обороты (инверсное задание)
                         if(DUTY_SPEED_COMPRES > 0) {
                            DUTY_SPEED_COMPRES = DUTY_SPEED_COMPRES - 1;
                         }
                     } else {
-//                    if(R_RPM_COMPRES > W_MAX_RPM_COMPRESS + 100) { //если текущие обороты компрессора больше чем задан. +100
+//                    if(R_RPM_COMPRES > W_MIN_RPM_COMPRESS + 100) { //если текущие обороты компрессора больше чем задан. +100
 //                        if(DUTY_SPEED_COMPRES < MAX_DUTY_COMPRES) {
 //                            DUTY_SPEED_COMPRES = DUTY_SPEED_COMPRES + 1;    // уменьшаем обороты (инверсное задание)
 //                        }
@@ -382,19 +382,23 @@ void computeRpmCompress (void)
             }
         } else {
 					CompresStr.countCheckStop = 0;
-		}
-				
-        CompresStr.speedRPM = ((1000000 / CompresStr.timePeriodTurn) * 6);
-#endif
-        if (CompresStr.speedRPM > 0x8000) {
-            R_RPM_COMPRES = -1;
-        } else if (CompresStr.speedRPM < 100) {
-            R_RPM_COMPRES = 0;
-        } else {
-            R_RPM_COMPRES = CompresStr.speedRPM;
         }
+        //если подсчёт завершён
+        if(CompresStr.flagCountTimDone) {
+            CompresStr.speedRPM = ((1000000 / CompresStr.timePeriodTurn) * 6);
+#endif
+            if (CompresStr.speedRPM > 0x8000) {
+                R_RPM_COMPRES = -1;
+            } else if (CompresStr.speedRPM < 100) {
+                R_RPM_COMPRES = 0;
+            } else {
+                R_RPM_COMPRES = CompresStr.speedRPM;
+            }
+            CompresStr.flagCountTimDone = 0;
+//            NVIC_EnableIRQ(EXTI4_15_IRQn);  //возобновляем прерывания
+        }
+        CompresStr.buffCheckStop = CompresStr.countTacho;
     }
-    CompresStr.buffCheckStop = CompresStr.countTacho;
 }
 
 
